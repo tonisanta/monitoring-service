@@ -83,11 +83,6 @@ func (s *Server) execHandler(w http.ResponseWriter, r *http.Request) {
 		cmd.Err = nil
 	}
 
-	if err := cmd.Run(); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -106,6 +101,6 @@ func (s *Server) execHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write(output)
 	w.WriteHeader(http.StatusOK)
+	w.Write(output)
 }
