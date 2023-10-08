@@ -17,16 +17,16 @@ func main() {
 	slog.Info("Starting monitor service ...")
 
 	m := metrics.NewMetrics()
-	ticker := time.NewTicker(time.Second * 10)
+	ticker := time.NewTicker(time.Minute * 1)
 	config := service.Config{
-		Timeout: time.Second * 2,
+		Timeout: time.Second * 30,
 	}
 
 	sched := scheduler.NewScheduler(ticker.C)
 	myService := service.NewService(m, &http.Client{}, config, time.Now)
 
 	checkUrl := func(ctx context.Context) {
-		myService.CheckStatus(ctx, "https://google.com/invented")
+		myService.CheckStatus(ctx, "https://google.com/")
 	}
 
 	ctx := context.Background()
@@ -34,8 +34,11 @@ func main() {
 		sched.Run(ctx, checkUrl)
 	}()
 
-	annotationService := annotations.GrafanaAnnotationService{}
-
-	srv := server.NewServer(m, &annotationService)
+	grafanaConfig := annotations.Config{
+		Host:     "http://localhost:3000",
+		ApiToken: "",
+	}
+	annotationService := annotations.NewGrafanaAnnotationsService(grafanaConfig, &http.Client{})
+	srv := server.NewServer(m, annotationService)
 	srv.Run(ctx)
 }

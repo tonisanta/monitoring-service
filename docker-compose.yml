@@ -1,0 +1,21 @@
+version: '3.1'
+
+services:
+  monitoring-service:
+    build: .
+    ports:
+      - "8080:8080"
+
+  prometheus:
+    build: ./prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/storage:/prometheus
+
+  grafana:
+    build: ./grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/storage:/var/lib/grafana

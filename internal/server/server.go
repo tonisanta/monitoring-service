@@ -77,6 +77,7 @@ func (s *Server) execHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
+	// TODO: parse input and args
 	cmd := exec.Command(req.Command)
 	if errors.Is(cmd.Err, exec.ErrDot) {
 		log.Println("inside here")
@@ -90,9 +91,9 @@ func (s *Server) execHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	annotation := annotations.Annotation{
-		Text: "My custom text",
+		Text: "Exec: " + req.Command,
 		Time: time.Now(),
-		Tags: []string{"tag1"},
+		Tags: []string{"command"},
 	}
 
 	err = s.annotationService.CreateAnnotation(r.Context(), annotation)
