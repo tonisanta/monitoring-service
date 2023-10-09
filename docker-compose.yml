@@ -8,8 +8,6 @@ services:
 
   prometheus:
     build: ./prometheus
-    ports:
-      - "9090:9090"
     volumes:
       - ./prometheus/storage:/prometheus
 

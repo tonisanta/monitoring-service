@@ -1,5 +1,7 @@
 FROM golang:alpine AS build
 WORKDIR /go/src/myapp
+COPY go.mod go.sum ./
+RUN go mod download
 COPY . .
 RUN go build -o /go/bin/myapp cmd/main.go
 

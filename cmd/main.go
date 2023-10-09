@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"log/slog"
 	"monitor-endpoint/internal/annotations"
 	"monitor-endpoint/internal/metrics"
@@ -23,7 +24,11 @@ func main() {
 	}
 
 	sched := scheduler.NewScheduler(ticker.C)
-	myService := service.NewService(m, &http.Client{}, config, time.Now)
+	myService := service.NewService(m, &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+	}, config, time.Now)
 
 	checkUrl := func(ctx context.Context) {
 		myService.CheckStatus(ctx, "https://google.com/")

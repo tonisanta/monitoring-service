@@ -71,6 +71,7 @@ func (s *Service) CheckStatus(parentCtx context.Context, url string) {
 
 	var statusCode *int
 	if err != nil {
+		statusCode = Ptr(520)
 		slog.Error(err.Error())
 		if errors.Is(err, context.DeadlineExceeded) {
 			statusCode = Ptr(499)

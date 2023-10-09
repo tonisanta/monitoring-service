@@ -3,15 +3,14 @@ package server
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"log"
 	"log/slog"
 	"monitor-endpoint/internal/annotations"
 	"monitor-endpoint/internal/metrics"
 	"net/http"
 	"os/exec"
+	"strings"
 	"time"
 )
 
@@ -78,11 +77,8 @@ func (s *Server) execHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	// TODO: parse input and args
-	cmd := exec.Command(req.Command)
-	if errors.Is(cmd.Err, exec.ErrDot) {
-		log.Println("inside here")
-		cmd.Err = nil
-	}
+	args := strings.Fields(req.Command)
+	cmd := exec.Command(args[0], args[1:]...)
 
 	output, err := cmd.CombinedOutput()
 	if err != nil {
