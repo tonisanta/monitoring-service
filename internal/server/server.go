@@ -18,22 +18,22 @@ const (
 	Port = 8080
 )
 
-type AnnotationsService interface {
+type AnnotationsRepository interface {
 	CreateAnnotation(context.Context, annotations.Annotation) error
 }
 
 type Server struct {
-	metrics           *metrics.Metrics
-	annotationService AnnotationsService
+	metrics              *metrics.Metrics
+	annotationRepository AnnotationsRepository
 }
 
 func NewServer(
 	metrics *metrics.Metrics,
-	annotationService AnnotationsService,
+	annotationService AnnotationsRepository,
 ) *Server {
 	return &Server{
-		metrics:           metrics,
-		annotationService: annotationService,
+		metrics:              metrics,
+		annotationRepository: annotationService,
 	}
 }
 
@@ -76,7 +76,6 @@ func (s *Server) execHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	// TODO: parse input and args
 	args := strings.Fields(req.Command)
 	cmd := exec.Command(args[0], args[1:]...)
 
@@ -92,7 +91,7 @@ func (s *Server) execHandler(w http.ResponseWriter, r *http.Request) {
 		Tags: []string{"command"},
 	}
 
-	err = s.annotationService.CreateAnnotation(r.Context(), annotation)
+	err = s.annotationRepository.CreateAnnotation(r.Context(), annotation)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

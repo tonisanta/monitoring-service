@@ -43,7 +43,7 @@ func main() {
 		Host:     "http://localhost:3000",
 		ApiToken: "",
 	}
-	annotationService := annotations.NewGrafanaAnnotationsService(grafanaConfig, &http.Client{})
-	srv := server.NewServer(m, annotationService)
+	annotationsRepo := annotations.NewGrafanaAnnotationsRepo(grafanaConfig, &http.Client{})
+	srv := server.NewServer(m, annotationsRepo)
 	srv.Run(ctx)
 }

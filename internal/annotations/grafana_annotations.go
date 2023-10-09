@@ -14,16 +14,16 @@ type Config struct {
 	ApiToken string
 }
 
-type GrafanaAnnotationsService struct {
+type GrafanaAnnotationsRepo struct {
 	config     Config
 	httpClient *http.Client
 }
 
-func NewGrafanaAnnotationsService(
+func NewGrafanaAnnotationsRepo(
 	config Config,
 	httpClient *http.Client,
-) *GrafanaAnnotationsService {
-	return &GrafanaAnnotationsService{
+) *GrafanaAnnotationsRepo {
+	return &GrafanaAnnotationsRepo{
 		config:     config,
 		httpClient: httpClient,
 	}
@@ -35,7 +35,7 @@ type CreateAnnotationReq struct {
 	Text string   `json:"text"`
 }
 
-func (s *GrafanaAnnotationsService) CreateAnnotation(ctx context.Context, annotation Annotation) error {
+func (s *GrafanaAnnotationsRepo) CreateAnnotation(ctx context.Context, annotation Annotation) error {
 	slog.Info("creating annotation in grafana ... ")
 
 	var b bytes.Buffer
