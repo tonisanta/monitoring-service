@@ -92,8 +92,9 @@ func (s *Service) CheckStatus(parentCtx context.Context, url string) {
 		labels[metrics.LabelCode] = "no status code"
 	}
 
-	elapsedTime := s.timeProvider().Sub(start)
-	s.metrics.ResponseTime.With(labels).Observe(elapsedTime.Seconds())
+	elapsedTime := s.timeProvider().Sub(start).Seconds()
+	s.metrics.ResponseTime.With(labels).Observe(elapsedTime)
+	s.metrics.ResponseTimeSummary.With(labels).Observe(elapsedTime)
 	s.metrics.NumRequests.With(labels).Inc()
 }
 
