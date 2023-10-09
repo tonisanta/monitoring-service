@@ -71,7 +71,6 @@ func (s *Service) CheckStatus(parentCtx context.Context, url string) {
 
 	var statusCode *int
 	if err != nil {
-		statusCode = Ptr(520)
 		slog.Error(err.Error())
 		if errors.Is(err, context.DeadlineExceeded) {
 			statusCode = Ptr(499)
@@ -90,7 +89,7 @@ func (s *Service) CheckStatus(parentCtx context.Context, url string) {
 	if statusCode != nil {
 		labels[metrics.LabelCode] = strconv.Itoa(*statusCode)
 	} else {
-		slog.Warn("status code is nil")
+		labels[metrics.LabelCode] = "no status code"
 	}
 
 	elapsedTime := s.timeProvider().Sub(start)

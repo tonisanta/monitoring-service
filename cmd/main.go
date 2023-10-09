@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"crypto/tls"
+	"flag"
 	"log/slog"
 	"monitor-endpoint/internal/annotations"
 	"monitor-endpoint/internal/metrics"
@@ -14,8 +15,11 @@ import (
 )
 
 func main() {
-	// TODO: add flags to parse config as input
 	slog.Info("Starting monitor service ...")
+
+	urlFlag := flag.String("url", "https://google.com/", "Url to be monitored")
+	apiTokenFlag := flag.String("token", "insert your token", "Grafana API token")
+	flag.Parse()
 
 	m := metrics.NewMetrics()
 	ticker := time.NewTicker(time.Minute * 1)
@@ -31,7 +35,7 @@ func main() {
 	}, config, time.Now)
 
 	checkUrl := func(ctx context.Context) {
-		myService.CheckStatus(ctx, "https://google.com/")
+		myService.CheckStatus(ctx, *urlFlag)
 	}
 
 	ctx := context.Background()
@@ -41,7 +45,7 @@ func main() {
 
 	grafanaConfig := annotations.Config{
 		Host:     "http://localhost:3000",
-		ApiToken: "",
+		ApiToken: *apiTokenFlag,
 	}
 	annotationsRepo := annotations.NewGrafanaAnnotationsRepo(grafanaConfig, &http.Client{})
 	srv := server.NewServer(m, annotationsRepo)
