@@ -17,7 +17,7 @@ import (
 func main() {
 	slog.Info("Starting monitor service ...")
 
-	urlFlag := flag.String("url", "https://google.com/", "Url to be monitored")
+	urlFlag := flag.String("url", "https://google.com/", "Url to monitor")
 	apiTokenFlag := flag.String("token", "insert your token", "Grafana API token")
 	grafanaHost := flag.String("host", "http://localhost:3000", "Grafana host")
 	tickerFreqFlag := flag.String("frequency", "1m", `Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h"`)
