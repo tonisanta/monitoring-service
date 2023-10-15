@@ -21,7 +21,8 @@ func main() {
 	apiTokenFlag := flag.String("token", "insert your token", "Grafana API token")
 	grafanaHost := flag.String("host", "http://localhost:3000", "Grafana host")
 	tickerFreqFlag := flag.String("frequency", "1m", `Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h"`)
-	timeoutFlag := flag.String("timeou", "30s", `Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h"`)
+	timeoutFlag := flag.String("timeout", "30s", `Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h"`)
+	portFlag := flag.Int("port", 8080, "Port used by the server")
 	flag.Parse()
 
 	tickerFreq, err := time.ParseDuration(*tickerFreqFlag)
@@ -63,6 +64,9 @@ func main() {
 		ApiToken: *apiTokenFlag,
 	}
 	annotationsRepo := annotations.NewGrafanaAnnotationsRepo(grafanaConfig, &http.Client{})
-	srv := server.NewServer(m, annotationsRepo)
+	srvConfig := server.Config{
+		Port: *portFlag,
+	}
+	srv := server.NewServer(m, srvConfig, annotationsRepo)
 	srv.Run(ctx)
 }

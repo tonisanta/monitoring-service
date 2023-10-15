@@ -22,17 +22,24 @@ type AnnotationsRepository interface {
 	CreateAnnotation(context.Context, annotations.Annotation) error
 }
 
+type Config struct {
+	Port int
+}
+
 type Server struct {
 	metrics              *metrics.Metrics
+	config               Config
 	annotationRepository AnnotationsRepository
 }
 
 func NewServer(
 	metrics *metrics.Metrics,
+	config Config,
 	annotationService AnnotationsRepository,
 ) *Server {
 	return &Server{
 		metrics:              metrics,
+		config:               config,
 		annotationRepository: annotationService,
 	}
 }
@@ -43,7 +50,7 @@ func (s *Server) Run(ctx context.Context) {
 	mux.Handle("/exec", http.HandlerFunc(s.execHandler))
 
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%d", Port),
+		Addr:    fmt.Sprintf(":%d", s.config.Port),
 		Handler: mux,
 	}
 
