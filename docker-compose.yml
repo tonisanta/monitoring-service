@@ -1,10 +1,10 @@
 version: '3.1'
 
 services:
-  monitoring-service:
-    build: .
-    ports:
-      - "8080:8080"
+  #monitoring-service:
+  #  build: .
+  #  ports:
+  #    - "8080:8080"
 
   prometheus:
     build: ./prometheus
