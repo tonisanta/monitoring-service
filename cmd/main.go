@@ -19,6 +19,7 @@ func main() {
 
 	urlFlag := flag.String("url", "https://google.com/", "Url to be monitored")
 	apiTokenFlag := flag.String("token", "insert your token", "Grafana API token")
+	grafanaHost := flag.String("host", "http://localhost:3000", "Grafana host")
 	flag.Parse()
 
 	m := metrics.NewMetrics()
@@ -44,7 +45,7 @@ func main() {
 	}()
 
 	grafanaConfig := annotations.Config{
-		Host:     "http://localhost:3000",
+		Host:     *grafanaHost,
 		ApiToken: *apiTokenFlag,
 	}
 	annotationsRepo := annotations.NewGrafanaAnnotationsRepo(grafanaConfig, &http.Client{})
