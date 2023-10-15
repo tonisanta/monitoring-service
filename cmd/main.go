@@ -20,12 +20,26 @@ func main() {
 	urlFlag := flag.String("url", "https://google.com/", "Url to be monitored")
 	apiTokenFlag := flag.String("token", "insert your token", "Grafana API token")
 	grafanaHost := flag.String("host", "http://localhost:3000", "Grafana host")
+	tickerFreqFlag := flag.String("frequency", "1m", `Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h"`)
+	timeoutFlag := flag.String("timeou", "30s", `Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h"`)
 	flag.Parse()
 
+	tickerFreq, err := time.ParseDuration(*tickerFreqFlag)
+	if err != nil {
+		slog.Error(err.Error())
+		return
+	}
+
+	timeout, err := time.ParseDuration(*timeoutFlag)
+	if err != nil {
+		slog.Error(err.Error())
+		return
+	}
+
 	m := metrics.NewMetrics()
-	ticker := time.NewTicker(time.Minute * 1)
+	ticker := time.NewTicker(tickerFreq)
 	config := service.Config{
-		Timeout: time.Second * 30,
+		Timeout: timeout,
 	}
 
 	sched := scheduler.NewScheduler(ticker.C)
